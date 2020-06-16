@@ -415,8 +415,6 @@ static int parse_fixheader(struct xlog_fixheader *xhdr,
 	if (pos < end && (mp_check(&pos, end) != 0 || pos != end)) {
 		pr_err("broken fixheader padding\n");
 		return -1;
-	} else {
-		pr_info("skip padding\n");
 	}
 
 	assert(pos == end);
@@ -497,6 +495,7 @@ static int parse_data(const char *data, const char *end)
 					     hdr.body[0].iov_base + hdr.body[0].iov_len);
 			}
 		} while (rows < rows_end);
+		emit_hr();
 
 		pos = rows_end;
 	}
