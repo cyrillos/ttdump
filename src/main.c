@@ -516,6 +516,30 @@ static const char *get_meta_end(const char *addr, size_t size)
 	return end + 2;
 }
 
+static int parse_meta(const char *data, const char *end)
+{
+	ssize_t size = end - data - 2;
+	char *copy = malloc(size+1);
+
+	assert(size > 0);
+
+	if (!copy) {
+		pr_perror("Can't allocate meta");
+		return -1;
+	}
+
+	memcpy(copy, data, size);
+	copy[size] = '\0';
+
+	for (char *tok = strtok(copy, "\n");
+	     tok; tok = strtok(NULL, "\n")) {
+		pr_info("meta: '%s'\n", tok);
+	}
+
+	free(copy);
+	return 0;
+}
+
 static int parse_file(const char *data, size_t size)
 {
 	const char *data_end = data + size;
@@ -537,6 +561,9 @@ static int parse_file(const char *data, size_t size)
 		pr_err("No data without marker\n");
 		return -1;
 	}
+
+	if (parse_meta(data, meta_end))
+		return -1;
 
 	return parse_data(meta_end, data_end);
 }
