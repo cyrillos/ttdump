@@ -548,8 +548,11 @@ static int parse_file(const char *data, size_t size)
 		return -1;
 	}
 
-	if (strncmp(data, "XLOG", 4) &&
-	    strncmp(data, "SNAP", 4)) {
+	if (strncmp(data, SIGNATURE_SNAP, strlen(SIGNATURE_SNAP)) &&
+	    strncmp(data, SIGNATURE_XLOG, strlen(SIGNATURE_XLOG)) &&
+	    strncmp(data, SIGNATURE_VY_XLOG, strlen(SIGNATURE_VY_XLOG)) &&
+	    strncmp(data, SIGNATURE_VY_RUN, strlen(SIGNATURE_VY_RUN)) &&
+	    strncmp(data, SIGNATURE_VY_INDEX, strlen(SIGNATURE_VY_INDEX))) {
 		pr_err("Signature mismatch\n");
 		return -1;
 	}

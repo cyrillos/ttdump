@@ -6,6 +6,12 @@
 
 #include "msgpuck/msgpuck.h"
 
+#define SIGNATURE_SNAP			"SNAP"
+#define SIGNATURE_XLOG			"XLOG"
+#define SIGNATURE_VY_XLOG		"VYLOG"
+#define SIGNATURE_VY_RUN		"RUN"
+#define SIGNATURE_VY_INDEX		"INDEX"
+
 enum {
 	XROW_HEADER_IOVMAX		= 1,
 	XROW_BODY_IOVMAX		= 2,
