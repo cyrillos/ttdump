@@ -1,0 +1,60 @@
+master
+======
+
+meta: 'SNAP'
+meta: 'Instance: 0a737b86-cffb-4b02-b028-05daa9906fd3'
+
+  type 0x2 (INSERT) replica_id 0 group_id 0 sync 0 lsn 0 tm 1.593e+09 tsn 0 is_commit 1 bodycnt 1 schema_version 0x4027e6
+    iov: len 55
+key: 0x10 'space id' value: 272
+key: 0x21 'tuple' value: {cluster, ba2cfb13-03ce-449a-bf63-21f9fbfbea44}
+
+  type 0x2 (INSERT) replica_id 0 group_id 0 sync 0 lsn 512 tm 1.593e+09 tsn 512 is_commit 1 bodycnt 1 schema_version 0x4027e6
+    iov: len 48
+key: 0x10 'space id' value: 320
+key: 0x21 'tuple' value: {1, 0a737b86-cffb-4b02-b028-05daa9906fd3}
+
+meta: 'XLOG'
+meta: 'Instance: 0a737b86-cffb-4b02-b028-05daa9906fd3'
+
+  type 0x2 (INSERT) replica_id 0x1 group_id 0 sync 0 lsn 17 tm 1.593e+09 tsn 17 is_commit 1 bodycnt 1 schema_version 0x4027e6
+    iov: len 46
+key: 0x10 'space id' value: 320
+key: 0x21 'tuple' value: {2, de994f0a-9b34-459c-ba9d-eb79fbaa3357}
+
+slave
+=====
+
+meta: 'SNAP'
+meta: 'Instance: de994f0a-9b34-459c-ba9d-eb79fbaa3357'
+
+  type 0x2 (INSERT) replica_id 0 group_id 0 sync 0 lsn 0 tm 1.593e+09 tsn 0 is_commit 1 bodycnt 1 schema_version 0x4027e6
+    iov: len 55
+key: 0x10 'space id' value: 272
+key: 0x21 'tuple' value: {cluster, ba2cfb13-03ce-449a-bf63-21f9fbfbea44}
+
+  type 0x2 (INSERT) replica_id 0 group_id 0 sync 0 lsn 523 tm 1.593e+09 tsn 523 is_commit 1 bodycnt 1 schema_version 0x4027e6
+    iov: len 48
+key: 0x10 'space id' value: 320
+key: 0x21 'tuple' value: {2, de994f0a-9b34-459c-ba9d-eb79fbaa3357}
+
+slave-anon
+==========
+
+meta: 'SNAP'
+meta: 'Instance: 2a6ea4c8-60bd-478c-9197-7c1f96f796df'
+
+  type 0x2 (INSERT) replica_id 0 group_id 0 sync 0 lsn 0 tm 1.593e+09 tsn 0 is_commit 1 bodycnt 1 schema_version 0x4027e6
+    iov: len 55
+key: 0x10 'space id' value: 272
+key: 0x21 'tuple' value: {cluster, ba2cfb13-03ce-449a-bf63-21f9fbfbea44}
+
+  type 0x2 (INSERT) replica_id 0 group_id 0 sync 0 lsn 522 tm 1.593e+09 tsn 522 is_commit 1 bodycnt 1 schema_version 0x4027e6
+    iov: len 48
+key: 0x10 'space id' value: 320
+key: 0x21 'tuple' value: {1, 0a737b86-cffb-4b02-b028-05daa9906fd3}
+
+  type 0x2 (INSERT) replica_id 0 group_id 0 sync 0 lsn 523 tm 1.593e+09 tsn 523 is_commit 1 bodycnt 1 schema_version 0x4027e6
+    iov: len 48
+key: 0x10 'space id' value: 320
+key: 0x21 'tuple' value: {2, de994f0a-9b34-459c-ba9d-eb79fbaa3357}
