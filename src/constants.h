@@ -6,11 +6,15 @@
 
 #include "msgpuck/msgpuck.h"
 
-#define SIGNATURE_SNAP			"SNAP"
-#define SIGNATURE_XLOG			"XLOG"
-#define SIGNATURE_VY_XLOG		"VYLOG"
-#define SIGNATURE_VY_RUN		"RUN"
-#define SIGNATURE_VY_INDEX		"INDEX"
+enum wal_file_type {
+	WAL_TYPE_SNAP			= 0,
+	WAL_TYPE_XLOG			= 1,
+	WAL_TYPE_VY_XLOG		= 2,
+	WAL_TYPE_VY_RUN			= 3,
+	WAL_TYPE_VY_INDEX		= 4,
+
+	WAL_TYPE_MAX
+};
 
 enum {
 	XROW_HEADER_IOVMAX		= 1,

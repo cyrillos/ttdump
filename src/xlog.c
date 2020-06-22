@@ -6,6 +6,14 @@
 #include "emit.h"
 #include "log.h"
 
+static char *wal_signatures[] = {
+	[WAL_TYPE_SNAP]		= "SNAP",
+	[WAL_TYPE_XLOG]		= "XLOG",
+	[WAL_TYPE_VY_XLOG]	= "VYLOG",
+	[WAL_TYPE_VY_RUN]	= "RUN",
+	[WAL_TYPE_VY_INDEX]	= "INDEX",
+};
+
 static const log_magic_t row_marker = mp_bswap_u32(0xd5ba0bab);
 static const log_magic_t zrow_marker = mp_bswap_u32(0xd5ba0bba);
 static const log_magic_t eof_marker = mp_bswap_u32(0xd510aded);
@@ -307,16 +315,22 @@ static int parse_meta(const char *data, const char *end)
 int parse_file(const char *data, size_t size)
 {
 	const char *data_end = data + size;
+	enum wal_file_type type = WAL_TYPE_MAX;
+
 	if (size < 4) {
 		printf("The size is too small %zd\n", size);
 		return -1;
 	}
 
-	if (strncmp(data, SIGNATURE_SNAP, strlen(SIGNATURE_SNAP)) &&
-	    strncmp(data, SIGNATURE_XLOG, strlen(SIGNATURE_XLOG)) &&
-	    strncmp(data, SIGNATURE_VY_XLOG, strlen(SIGNATURE_VY_XLOG)) &&
-	    strncmp(data, SIGNATURE_VY_RUN, strlen(SIGNATURE_VY_RUN)) &&
-	    strncmp(data, SIGNATURE_VY_INDEX, strlen(SIGNATURE_VY_INDEX))) {
+	for (int i = 0; i < (int)ARRAY_SIZE(wal_signatures); i++) {
+		int slen = strlen(wal_signatures[i]);
+		if (!strncmp(data, wal_signatures[i], slen)) {
+			type = i;
+			break;
+		}
+	}
+
+	if (type == WAL_TYPE_MAX) {
 		pr_err("Signature mismatch\n");
 		return -1;
 	}
