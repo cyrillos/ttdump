@@ -147,14 +147,14 @@ void emit_xlog_data(const char *pos, const char *end)
 	uint32_t size = mp_decode_map(&pos);
 	for (uint32_t i = 0; i < size; i++) {
 		if (mp_typeof(*pos) != MP_UINT) {
-			pr_err("MP_UINT expected\n");
+			pr_err("MP_UINT expected but got %d\n", mp_typeof(*pos));
 			return;
 		}
 
 		uint64_t key = mp_decode_uint(&pos);
 		if (key >= IPROTO_KEY_MAX ||
 		    iproto_key_type[key] != mp_typeof(*pos)) {
-			pr_err("unknown key\n");
+			pr_err("unknown key %#llx\n", key);
 			return;
 		}
 
@@ -163,7 +163,7 @@ void emit_xlog_data(const char *pos, const char *end)
 		switch (key) {
 		case IPROTO_SPACE_ID:
 			if (mp_typeof(*pos) != MP_UINT) {
-				pr_err("MP_UINT expected\n");
+				pr_err("MP_UINT expected but got %d\n", mp_typeof(*pos));
 				return;
 			}
 			pr_info("value: ");
@@ -171,7 +171,7 @@ void emit_xlog_data(const char *pos, const char *end)
 			break;
 		case IPROTO_REPLICA_ID:
 			if (mp_typeof(*pos) != MP_ARRAY) {
-				pr_err("MP_ARRAY expected\n");
+				pr_err("MP_ARRAY expected but got %d\n", mp_typeof(*pos));
 				return;
 			}
 			pr_info("value: ");
@@ -179,14 +179,14 @@ void emit_xlog_data(const char *pos, const char *end)
 			break;
 		case IPROTO_TUPLE:
 			if (mp_typeof(*pos) != MP_ARRAY) {
-				pr_err("MP_ARRAY expected\n");
+				pr_err("MP_ARRAY expected but got %d\n", mp_typeof(*pos));
 				return;
 			}
 			pr_info("value: ");
 			emit_value(&pos, end);
 			break;
 		default:
-			pr_info("default");
+			pr_info("skip value");
 			mp_next(&pos);
 			break;
 		}
