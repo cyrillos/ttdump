@@ -13,6 +13,8 @@
 
 int main(int argc, char *argv[])
 {
+	xlog_ctx_t ctx;
+
 	if (argc < 2) {
 		pr_err("Provide path\n");
 		return 1;
@@ -39,9 +41,18 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	int ret = parse_file(addr, st.st_size);
+	xlog_ctx_create(&ctx);
+
+	ctx.path = argv[1];
+	ctx.data = addr;
+	ctx.end = addr + st.st_size;
+	ctx.meta = addr;
+	ctx.size = st.st_size;
+
+	int ret = parse_file(&ctx);
 	munmap(addr, st.st_size);
 	close(fd);
 
+	xlog_ctx_destroy(&ctx);
 	return ret;
 }

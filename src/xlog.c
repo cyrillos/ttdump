@@ -225,19 +225,19 @@ static ssize_t decompress(ZSTD_DCtx *zdctx, char *dst, ssize_t dst_size,
 	return output.pos;
 }
 
-static int parse_data(ZSTD_DCtx *zdctx, const char *data, const char *end)
+static int parse_data(xlog_ctx_t *ctx)
 {
 	struct xlog_fixheader xhdr;
 	struct xrow_header hdr;
 
-	const char *pos = data;
+	const char *pos = ctx->meta_end;
 	const char *rows, *rows_end;
 	static char buf[IPROTO_BODY_LEN_MAX];
 
 	int rc = -1;
 
-	while (pos < end) {
-		size_t size = end - pos;
+	while (pos < ctx->end) {
+		size_t size = ctx->end - pos;
 
 		if (parse_fixheader(&xhdr, &pos, &size))
 			return -1;
@@ -245,7 +245,7 @@ static int parse_data(ZSTD_DCtx *zdctx, const char *data, const char *end)
 		emit_xlog_fixheader(&xhdr);
 
 		if (xhdr.magic == zrow_marker) {
-			ssize_t len = decompress(zdctx,
+			ssize_t len = decompress(ctx->zdctx,
 						 buf, sizeof(buf),
 						 pos, xhdr.len);
 			if (len < 0)
@@ -312,43 +312,36 @@ static int parse_meta(const char *data, const char *end)
 	return 0;
 }
 
-int parse_file(const char *data, size_t size)
+int parse_file(xlog_ctx_t *ctx)
 {
-	const char *data_end = data + size;
-	enum wal_file_type type = WAL_TYPE_MAX;
-
-	if (size < 4) {
-		printf("The size is too small %zd\n", size);
+	if (ctx->size < sizeof(log_magic_t)) {
+		printf("The size is too small %zd\n", ctx->size);
 		return -1;
 	}
 
 	for (int i = 0; i < (int)ARRAY_SIZE(wal_signatures); i++) {
 		int slen = strlen(wal_signatures[i]);
-		if (!strncmp(data, wal_signatures[i], slen)) {
-			type = i;
+		if (!strncmp(ctx->data, wal_signatures[i], slen)) {
+			ctx->file_type = i;
 			break;
 		}
 	}
 
-	if (type == WAL_TYPE_MAX) {
+	if (ctx->file_type == WAL_TYPE_MAX) {
 		pr_err("Signature mismatch\n");
 		return -1;
 	}
 
-	const char *meta_end = get_meta_end(data, size);
-	if (!meta_end)
+	ctx->meta_end = get_meta_end(ctx->meta, ctx->size);
+	if (!ctx->meta_end)
 		return -1;
-	if (meta_end >= data_end) {
+	if (ctx->meta_end >= ctx->end) {
 		pr_err("No data without marker\n");
 		return -1;
 	}
 
-	if (parse_meta(data, meta_end))
+	if (parse_meta(ctx->data, ctx->end))
 		return -1;
 
-	ZSTD_DCtx *zdctx = ZSTD_createDCtx();
-	int ret = parse_data(zdctx, meta_end, data_end);
-	ZSTD_freeDCtx(zdctx);
-
-	return ret;
+	return parse_data(ctx);
 }
