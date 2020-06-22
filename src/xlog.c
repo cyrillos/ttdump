@@ -217,9 +217,8 @@ static ssize_t decompress(ZSTD_DCtx *zdctx, char *dst, ssize_t dst_size,
 	return output.pos;
 }
 
-static int parse_data(const char *data, const char *end)
+static int parse_data(ZSTD_DCtx *zdctx, const char *data, const char *end)
 {
-	ZSTD_DCtx *zdctx = ZSTD_createDCtx();
 	struct xlog_fixheader xhdr;
 	struct xrow_header hdr;
 
@@ -233,7 +232,7 @@ static int parse_data(const char *data, const char *end)
 		size_t size = end - pos;
 
 		if (parse_fixheader(&xhdr, &pos, &size))
-			goto err;
+			return -1;
 
 		emit_xlog_fixheader(&xhdr);
 
@@ -242,7 +241,7 @@ static int parse_data(const char *data, const char *end)
 						 buf, sizeof(buf),
 						 pos, xhdr.len);
 			if (len < 0)
-				goto err;
+				return -1;
 			rows = buf;
 			rows_end = buf + len;
 		} else if (xhdr.magic == row_marker) {
@@ -255,7 +254,7 @@ static int parse_data(const char *data, const char *end)
 
 		do {
 			if (xrow_header_decode(&hdr, (const char **)&rows, rows_end, false))
-				goto err;
+				return -1;
 
 			emit_xlog_header(&hdr);
 			for (size_t i = 0; i < hdr.bodycnt; i++) {
@@ -267,11 +266,8 @@ static int parse_data(const char *data, const char *end)
 
 		pos = rows_end;
 	}
-	rc = 0;
 
-err:
-	ZSTD_freeDCtx(zdctx);
-	return rc;
+	return 0;
 }
 
 static const char *get_meta_end(const char *addr, size_t size)
@@ -336,5 +332,9 @@ int parse_file(const char *data, size_t size)
 	if (parse_meta(data, meta_end))
 		return -1;
 
-	return parse_data(meta_end, data_end);
+	ZSTD_DCtx *zdctx = ZSTD_createDCtx();
+	int ret = parse_data(zdctx, meta_end, data_end);
+	ZSTD_freeDCtx(zdctx);
+
+	return ret;
 }
