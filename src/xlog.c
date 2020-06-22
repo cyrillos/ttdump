@@ -290,7 +290,7 @@ static const char *get_meta_end(const char *addr, size_t size)
 
 static int parse_meta(const char *data, const char *end)
 {
-	ssize_t size = end - data - 2;
+	ssize_t size = end - data - 1;
 	char *copy = malloc(size+1);
 
 	assert(size > 0);
@@ -340,7 +340,7 @@ int parse_file(xlog_ctx_t *ctx)
 		return -1;
 	}
 
-	if (parse_meta(ctx->data, ctx->end))
+	if (parse_meta(ctx->data, ctx->meta_end))
 		return -1;
 
 	return parse_data(ctx);
