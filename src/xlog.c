@@ -232,7 +232,7 @@ static int parse_data(ZSTD_DCtx *zdctx, const char *data, const char *end)
 
 	const char *pos = data;
 	const char *rows, *rows_end;
-	char buf[2 << 20];
+	static char buf[IPROTO_BODY_LEN_MAX];
 
 	int rc = -1;
 
