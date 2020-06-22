@@ -4,16 +4,17 @@ project (ttdump)
 #
 # Perform build type specific configuration.
 #
+set (CC_OPT "-D_GNU_SOURCE")
 set (CC_DEBUG_OPT "-ggdb3")
 
 set (CMAKE_C_FLAGS_DEBUG
-    "${CMAKE_C_FLAGS_DEBUG} ${CC_DEBUG_OPT} -O0")
+    "${CMAKE_C_FLAGS_DEBUG} ${CC_DEBUG_OPT} ${CC_OPT} -O0")
 set (CMAKE_C_FLAGS_RELWITHDEBINFO
-    "${CMAKE_C_FLAGS_RELWITHDEBINFO} ${CC_DEBUG_OPT} -O2")
+    "${CMAKE_C_FLAGS_RELWITHDEBINFO} ${CC_DEBUG_OPT} ${CC_OPT} -O2")
 set (CMAKE_CXX_FLAGS_DEBUG
-    "${CMAKE_CXX_FLAGS_DEBUG} ${CC_DEBUG_OPT} -O0")
+    "${CMAKE_CXX_FLAGS_DEBUG} ${CC_DEBUG_OPT} ${CC_OPT} -O0")
 set (CMAKE_CXX_FLAGS_RELWITHDEBINFO
-    "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} ${CC_DEBUG_OPT} -O2")
+    "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} ${CC_DEBUG_OPT} ${CC_OPT} -O2")
 
 unset(CC_DEBUG_OPT)
 
@@ -40,12 +41,18 @@ add_custom_target(tags COMMAND ${CTAGS} -R ${tagsExclude} -f tags
 add_custom_target(ctags DEPENDS tags)
 
 set(HEADER_FILES
+	src/compiler.h
 	src/constants.h
+	src/xlog.h
+	src/emit.h
+	src/log.h
 	src/load.h
 	src/msgpuck/msgpuck.h
 	)
 set(SOURCE_FILES
 	src/main.c
+	src/emit.c
+	src/xlog.c
 	src/constants.c
 	src/msgpuck/hints.c
 	src/msgpuck/msgpuck.c

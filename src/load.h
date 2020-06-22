@@ -4,10 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define __packed  __attribute__((packed))
-
-#define bit_likely(x)    __builtin_expect((x),1)
-#define bit_unlikely(x)  __builtin_expect((x),0)
+#include "compiler.h"
 
 struct __packed unaligned_mem {
 	union {
