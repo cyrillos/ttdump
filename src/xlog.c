@@ -315,7 +315,7 @@ static int parse_meta(const char *data, const char *end)
 int parse_file(xlog_ctx_t *ctx)
 {
 	if (ctx->size < sizeof(log_magic_t)) {
-		printf("The size is too small %zd\n", ctx->size);
+		pr_err("The size is too small %zd\n", ctx->size);
 		return -1;
 	}
 
