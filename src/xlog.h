@@ -12,8 +12,20 @@
 
 typedef uint32_t log_magic_t;
 
+enum {
+	XLOG_META_INSTANCE_UUID_KEY,
+	XLOG_META_INSTANCE_INSTANCE_UUID_KEY_V12,
+	XLOG_META_XLOG_META_VCLOCK_KEY,
+	XLOG_META_VERSION_KEY,
+	XLOG_META_PREV_VCLOCK_KEY,
+
+	XLOG_META_MAX,
+};
+
 typedef struct {
 	ZSTD_DCtx	*zdctx;
+
+	char		meta_values[XLOG_META_MAX][128];
 
 	const char	*path;
 	const char	*data;

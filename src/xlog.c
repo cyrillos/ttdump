@@ -14,6 +14,14 @@ static char *wal_signatures[] = {
 	[WAL_TYPE_VY_INDEX]	= "INDEX",
 };
 
+static char *meta_keys[] = {
+	[XLOG_META_INSTANCE_UUID_KEY]			= "Instance",
+	[XLOG_META_INSTANCE_INSTANCE_UUID_KEY_V12]	= "Server",
+	[XLOG_META_XLOG_META_VCLOCK_KEY]		= "VClock",
+	[XLOG_META_VERSION_KEY]				= "Version",
+	[XLOG_META_PREV_VCLOCK_KEY]			= "PrevVClock",
+};
+
 static const log_magic_t row_marker = mp_bswap_u32(0xd5ba0bab);
 static const log_magic_t zrow_marker = mp_bswap_u32(0xd5ba0bba);
 static const log_magic_t eof_marker = mp_bswap_u32(0xd510aded);
@@ -288,8 +296,10 @@ static const char *get_meta_end(const char *addr, size_t size)
 	return end + 2;
 }
 
-static int parse_meta(const char *data, const char *end)
+static int parse_meta(xlog_ctx_t *ctx)
 {
+	const char *data = ctx->meta;
+	const char *end = ctx->meta_end;
 	ssize_t size = end - data - 1;
 	char *copy = malloc(size+1);
 
@@ -305,7 +315,32 @@ static int parse_meta(const char *data, const char *end)
 
 	for (char *tok = strtok(copy, "\n");
 	     tok; tok = strtok(NULL, "\n")) {
-		pr_info("meta: '%s'\n", tok);
+		//pr_info("meta: '%s'\n", tok);
+
+		const char *pos = strchr(tok, ':');
+		if (!pos)
+			continue;
+
+		for (size_t i = 0; i < ARRAY_SIZE(meta_keys); i++) {
+			size_t key_len = strlen(meta_keys[i]);
+			if (!strncmp(tok, meta_keys[i], key_len)) {
+				size_t len = strlen(&pos[2]);
+				if (len > sizeof(ctx->meta_values[0])) {
+					pr_err("Too long meta value\n");
+					return -1;
+				}
+
+				strcpy(ctx->meta_values[i], &pos[2]);
+				break;
+			}
+		}
+	}
+
+	for (size_t i = 0; i < ARRAY_SIZE(meta_keys); i++) {
+		if (ctx->meta_values[i][0]) {
+			pr_info("meta: %-20s: '%s'\n", meta_keys[i],
+				ctx->meta_values[i]);
+		}
 	}
 
 	free(copy);
@@ -340,7 +375,7 @@ int parse_file(xlog_ctx_t *ctx)
 		return -1;
 	}
 
-	if (parse_meta(ctx->data, ctx->meta_end))
+	if (parse_meta(ctx))
 		return -1;
 
 	return parse_data(ctx);
