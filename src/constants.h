@@ -166,4 +166,52 @@ extern const char *iproto_type_strs[IPROTO_TYPE_MAX];
 extern const uint64_t iproto_body_key_map[IPROTO_TYPE_STAT_MAX];
 extern const char *iproto_key_strs[IPROTO_KEY_MAX];
 
+enum vy_log_key {
+	VY_LOG_KEY_LSM_ID		= 0,
+	VY_LOG_KEY_RANGE_ID		= 1,
+	VY_LOG_KEY_RUN_ID		= 2,
+	VY_LOG_KEY_BEGIN		= 3,
+	VY_LOG_KEY_END			= 4,
+	VY_LOG_KEY_INDEX_ID		= 5,
+	VY_LOG_KEY_SPACE_ID		= 6,
+	VY_LOG_KEY_DEF			= 7,
+	VY_LOG_KEY_SLICE_ID		= 8,
+	VY_LOG_KEY_DUMP_LSN		= 9,
+	VY_LOG_KEY_GC_LSN		= 10,
+	VY_LOG_KEY_TRUNCATE_COUNT	= 11,
+	VY_LOG_KEY_CREATE_LSN		= 12,
+	VY_LOG_KEY_MODIFY_LSN		= 13,
+	VY_LOG_KEY_DROP_LSN		= 14,
+	VY_LOG_KEY_GROUP_ID		= 15,
+	VY_LOG_KEY_DUMP_COUNT		= 16,
+
+	vy_log_key_MAX,
+};
+
+enum vy_log_record_type {
+	VY_LOG_CREATE_LSM		= 0,
+	VY_LOG_DROP_LSM			= 1,
+	VY_LOG_INSERT_RANGE		= 2,
+	VY_LOG_DELETE_RANGE		= 3,
+	VY_LOG_PREPARE_RUN		= 4,
+	VY_LOG_CREATE_RUN		= 5,
+	VY_LOG_DROP_RUN			= 6,
+	VY_LOG_FORGET_RUN		= 7,
+	VY_LOG_INSERT_SLICE		= 8,
+	VY_LOG_DELETE_SLICE		= 9,
+	VY_LOG_DUMP_LSM			= 10,
+	VY_LOG_SNAPSHOT			= 11,
+	VY_LOG_TRUNCATE_LSM		= 12,
+	VY_LOG_MODIFY_LSM		= 13,
+	VY_LOG_FORGET_LSM		= 14,
+	VY_LOG_PREPARE_LSM		= 15,
+	VY_LOG_REBOOTSTRAP		= 16,
+	VY_LOG_ABORT_REBOOTSTRAP	= 17,
+
+	vy_log_record_type_MAX
+};
+
+extern const char *vy_log_key_name[vy_log_key_MAX];
+extern const char *vy_log_type_name[vy_log_record_type_MAX];
+
 #endif /* CONSTANTS_H__ */

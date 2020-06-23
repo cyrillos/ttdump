@@ -180,3 +180,44 @@ const char *iproto_key_strs[IPROTO_KEY_MAX] = {
 	"SQL info",         /* 0x42 */
 	"stmt id",          /* 0x43 */
 };
+
+const char *vy_log_key_name[vy_log_key_MAX] = {
+	[VY_LOG_KEY_LSM_ID]		= "lsm_id",
+	[VY_LOG_KEY_RANGE_ID]		= "range_id",
+	[VY_LOG_KEY_RUN_ID]		= "run_id",
+	[VY_LOG_KEY_BEGIN]		= "begin",
+	[VY_LOG_KEY_END]		= "end",
+	[VY_LOG_KEY_INDEX_ID]		= "index_id",
+	[VY_LOG_KEY_SPACE_ID]		= "space_id",
+	[VY_LOG_KEY_DEF]		= "key_def",
+	[VY_LOG_KEY_SLICE_ID]		= "slice_id",
+	[VY_LOG_KEY_DUMP_LSN]		= "dump_lsn",
+	[VY_LOG_KEY_GC_LSN]		= "gc_lsn",
+	[VY_LOG_KEY_TRUNCATE_COUNT]	= "truncate_count",
+	[VY_LOG_KEY_CREATE_LSN]		= "create_lsn",
+	[VY_LOG_KEY_MODIFY_LSN]		= "modify_lsn",
+	[VY_LOG_KEY_DROP_LSN]		= "drop_lsn",
+	[VY_LOG_KEY_GROUP_ID]		= "group_id",
+	[VY_LOG_KEY_DUMP_COUNT]		= "dump_count",
+};
+
+const char *vy_log_type_name[vy_log_record_type_MAX] = {
+	[VY_LOG_CREATE_LSM]		= "create_lsm",
+	[VY_LOG_DROP_LSM]		= "drop_lsm",
+	[VY_LOG_INSERT_RANGE]		= "insert_range",
+	[VY_LOG_DELETE_RANGE]		= "delete_range",
+	[VY_LOG_PREPARE_RUN]		= "prepare_run",
+	[VY_LOG_CREATE_RUN]		= "create_run",
+	[VY_LOG_DROP_RUN]		= "drop_run",
+	[VY_LOG_FORGET_RUN]		= "forget_run",
+	[VY_LOG_INSERT_SLICE]		= "insert_slice",
+	[VY_LOG_DELETE_SLICE]		= "delete_slice",
+	[VY_LOG_DUMP_LSM]		= "dump_lsm",
+	[VY_LOG_SNAPSHOT]		= "snapshot",
+	[VY_LOG_TRUNCATE_LSM]		= "truncate_lsm",
+	[VY_LOG_MODIFY_LSM]		= "modify_lsm",
+	[VY_LOG_FORGET_LSM]		= "forget_lsm",
+	[VY_LOG_PREPARE_LSM]		= "prepare_lsm",
+	[VY_LOG_REBOOTSTRAP]		= "rebootstrap",
+	[VY_LOG_ABORT_REBOOTSTRAP]	= "abort_rebootstrap",
+};
