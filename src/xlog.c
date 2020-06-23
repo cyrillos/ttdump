@@ -249,6 +249,8 @@ static int parse_data(xlog_ctx_t *ctx)
 
 		if (parse_fixheader(&xhdr, &pos, &size))
 			return -1;
+		else if (xhdr.magic == eof_marker)
+			return 0;
 
 		emit_xlog_fixheader(&xhdr);
 
@@ -264,8 +266,8 @@ static int parse_data(xlog_ctx_t *ctx)
 			rows = pos;
 			rows_end = pos + xhdr.len;
 		} else {
-			assert(xhdr.magic == eof_marker);
-			break;
+			pr_err("Unknown header magic: %#x\n", xhdr.magic);
+			return -1;
 		}
 
 		do {
@@ -280,7 +282,7 @@ static int parse_data(xlog_ctx_t *ctx)
 		} while (rows < rows_end);
 		emit_hr();
 
-		pos = rows_end;
+		pos += xhdr.len;
 	}
 
 	return 0;
