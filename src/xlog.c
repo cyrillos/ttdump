@@ -276,7 +276,7 @@ static int parse_data(xlog_ctx_t *ctx)
 
 			emit_xlog_header(&hdr);
 			for (size_t i = 0; i < hdr.bodycnt; i++) {
-				emit_xlog_data(hdr.body[0].iov_base,
+				emit_xlog_data(ctx, hdr.body[0].iov_base,
 					       hdr.body[0].iov_base + hdr.body[0].iov_len);
 			}
 		} while (rows < rows_end);

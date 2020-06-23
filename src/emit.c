@@ -66,7 +66,7 @@ void emit_xlog_header(const struct xrow_header *hdr)
 	emit_hr();
 }
 
-void emit_value(const char **pos, const char *end)
+void emit_value(xlog_ctx_t *ctx, const char **pos, const char *end)
 {
 	char buf[4096];
 	int type = mp_typeof(**pos);
@@ -101,7 +101,7 @@ void emit_value(const char **pos, const char *end)
 		uint32_t size = mp_decode_array(pos);
 		pr_info("{");
 		for (size_t i = 0; i < size; i++) {
-			emit_value(pos, end);
+			emit_value(ctx, pos, end);
 			pr_info("%s", i < size-1 ? ", " : "");
 		}
 		pr_info("}");
@@ -111,9 +111,9 @@ void emit_value(const char **pos, const char *end)
 		uint32_t size = mp_decode_map(pos);
 		pr_info("{");
 		for (size_t i = 0; i < size; i++) {
-			emit_value(pos, end);
+			emit_value(ctx, pos, end);
 			pr_info(": ");
-			emit_value(pos, end);
+			emit_value(ctx, pos, end);
 			pr_info("%s", i < size-1 ? ", " : "");
 		}
 		pr_info("}");
@@ -137,7 +137,7 @@ void emit_value(const char **pos, const char *end)
 	}
 }
 
-void emit_xlog_data(const char *pos, const char *end)
+void emit_xlog_data(xlog_ctx_t *ctx, const char *pos, const char *end)
 {
 	if (mp_typeof(pos[0]) != MP_MAP) {
 		pr_err("map expected but got %d\n", mp_typeof(pos[0]));
@@ -160,7 +160,7 @@ void emit_xlog_data(const char *pos, const char *end)
 
 		pr_info("key: %#llx '%s' ", key, iproto_key_strs[key]);
 		pr_info("value: ");
-		emit_value(&pos, end);
+		emit_value(ctx, &pos, end);
 		pr_info("\n");
 	}
 }
