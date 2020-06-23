@@ -159,37 +159,8 @@ void emit_xlog_data(const char *pos, const char *end)
 		}
 
 		pr_info("key: %#llx '%s' ", key, iproto_key_strs[key]);
-
-		switch (key) {
-		case IPROTO_SPACE_ID:
-			if (mp_typeof(*pos) != MP_UINT) {
-				pr_err("MP_UINT expected but got %d\n", mp_typeof(*pos));
-				return;
-			}
-			pr_info("value: ");
-			emit_value(&pos, end);
-			break;
-		case IPROTO_REPLICA_ID:
-			if (mp_typeof(*pos) != MP_ARRAY) {
-				pr_err("MP_ARRAY expected but got %d\n", mp_typeof(*pos));
-				return;
-			}
-			pr_info("value: ");
-			emit_value(&pos, end);
-			break;
-		case IPROTO_TUPLE:
-			if (mp_typeof(*pos) != MP_ARRAY) {
-				pr_err("MP_ARRAY expected but got %d\n", mp_typeof(*pos));
-				return;
-			}
-			pr_info("value: ");
-			emit_value(&pos, end);
-			break;
-		default:
-			pr_info("skip value");
-			mp_next(&pos);
-			break;
-		}
+		pr_info("value: ");
+		emit_value(&pos, end);
 		pr_info("\n");
 	}
 }
