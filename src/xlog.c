@@ -244,6 +244,16 @@ static int parse_data(xlog_ctx_t *ctx)
 
 	int rc = -1;
 
+	/*
+	 * We don't verify Vynil files since system
+	 * spaces are sitting in xlog\snap files.
+	 */
+	if (ctx->file_type != WAL_TYPE_SNAP &&
+	    ctx->file_type != WAL_TYPE_XLOG) {
+		pr_info("vynil files are not verified\n");
+		return 0;
+	}
+
 	while (pos < ctx->end) {
 		size_t size = ctx->end - pos;
 
